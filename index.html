@@ -7,271 +7,658 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
   <style>
     :root{
-      --bg:#121212;
-      --panel:#1a1a1a;
-      --muted:#e0e0e0;
-      --accent:#f28b82;
+      /* Catppuccin Mocha Theme */
+      --bg: #11111b;
+      --surface0: #313244;
+      --surface1: #45475a;
+      --surface2: #585b70;
+      --text: #cdd6f4;
+      --subtext1: #bac2de;
+      --subtext0: #a6adc8;
+      --accent: #cba6f7; /* Mauve */
+      --accent2: #f38ba8; /* Pink */
+      --accent3: #94e2d5; /* Teal */
+      --accent4: #fab387; /* Peach */
     }
+    
     *{box-sizing:border-box}
     body {
       margin: 0;
       font-family: 'Segoe UI', Tahoma, sans-serif;
       background-color: var(--bg);
-      color: var(--muted);
+      color: var(--text);
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
+      overflow-x: hidden;
+    }
+
+    /* 3D Background Canvas */
+    #bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      pointer-events: none;
     }
 
     /* Header */
     header {
       padding: 4rem 2rem;
       text-align: center;
-      background: linear-gradient(135deg, #1e1e1e, #222);
-      border-bottom: 3px solid var(--accent);
+      background: rgba(17, 17, 27, 0.8);
+      backdrop-filter: blur(10px);
+      border-bottom: 2px solid var(--accent);
       position: relative;
-      overflow: hidden;
+      z-index: 1;
     }
-    header::before {
-      content: '';
-      position: absolute;
-      top: -55%; left: -50%;
-      width: 200%; height: 200%;
-      background: radial-gradient(circle, rgba(242,139,130,0.12) 0%, transparent 60%);
-      animation: pulseGlow 6s infinite ease-in-out;
+    
+    .profile-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    
+    .profile-pic {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background-image: url('https://cdn.discordapp.com/avatars/1056952213056004118/246dafe75c2ee87ff17eebf0388b33ee?size=1024');
+      background-size: cover;
+      background-position: center;
+      box-shadow: 0 8px 32px rgba(203, 166, 247, 0.3);
+      border: 3px solid var(--accent);
+    }
+    
+    header h1 {
+      margin: 0; 
+      font-size: 3rem; 
+      color: var(--accent);
+    }
+    
+    header p {
+      font-size:1.2rem; 
+      margin-top:.5rem; 
+      color: var(--subtext1);
+    }
+    
+    .header-3d {
+      width: 100%;
+      height: 200px;
+      margin: 2rem 0;
+    }
+
+    /* Content */
+    .content {
+      padding: 2rem;
+      max-width: 1000px;
+      margin: 2rem auto;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .panel {
+      background: rgba(49, 50, 68, 0.8);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,.3);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .about-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    
+    .skill-category {
+      background: rgba(69, 71, 90, 0.6);
+      border-radius: 15px;
+      padding: 1.5rem;
+      border: 1px solid var(--surface2);
+    }
+    
+    h2 { 
+      color: var(--accent); 
+      margin-top: 0;
+      font-size: 2rem;
+    }
+    
+    h3 { 
+      color: var(--accent3);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0.8rem;
+      margin-top: 1rem;
+    }
+    
+    .skill-item {
+      background: rgba(203, 166, 247, 0.1);
+      padding: 0.8rem 1rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      border: 1px solid rgba(203, 166, 247, 0.2);
+      transition: all 0.3s ease;
+    }
+    
+    .skill-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(203, 166, 247, 0.3);
+      border-color: var(--accent);
+    }
+
+    .social-links {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    
+    .social-link {
+      background: rgba(148, 226, 213, 0.1);
+      padding: 1rem;
+      border-radius: 10px;
+      text-decoration: none;
+      color: var(--text);
+      border: 1px solid rgba(148, 226, 213, 0.2);
+      transition: all 0.3s ease;
+      display: block;
+    }
+    
+    .social-link:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(148, 226, 213, 0.4);
+      border-color: var(--accent3);
+      color: var(--accent3);
+    }
+    
+    .social-platform {
+      font-weight: bold;
+      color: var(--accent3);
+    }
+
+    .useful-links {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    
+    .useful-link {
+      background: rgba(250, 179, 135, 0.1);
+      padding: 0.8rem 1rem;
+      border-radius: 10px;
+      text-decoration: none;
+      color: var(--text);
+      border: 1px solid rgba(250, 179, 135, 0.2);
+      transition: all 0.3s ease;
+      display: block;
+      text-align: center;
+    }
+    
+    .useful-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(250, 179, 135, 0.3);
+      border-color: var(--accent4);
+      color: var(--accent4);
+    }
+
+    .easter-egg-hint {
+      background: rgba(69, 71, 90, 0.4);
+      border: 1px dashed var(--accent2);
+      border-radius: 10px;
+      padding: 1rem;
+      text-align: center;
+      color: var(--subtext0);
+      margin-top: 2rem;
+    }
+    
+    kbd {
+      background: var(--surface1);
+      border-radius: 4px;
+      padding: 3px 6px;
+      border: 1px solid var(--surface2);
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    footer {
+      padding: 2rem 1rem;
+      text-align: center;
+      background: rgba(17, 17, 27, 0.9);
+      backdrop-filter: blur(10px);
+      border-top: 2px solid var(--accent);
+      position: relative;
+      z-index: 1;
+    }
+    
+    footer p { margin: 0.5rem 0; color: var(--subtext1); }
+    footer .credit { font-weight: 700; color: var(--accent2); font-size: 1.1rem; }
+    footer a { color: var(--accent2); text-decoration: none; }
+    footer a:hover { color: var(--accent); }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(17, 17, 27, 0.8);
+      backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
       pointer-events: none;
+      transition: all 0.3s ease;
     }
-    header h1 {margin: 0; font-size: 3.25rem; color: var(--accent); animation: floatText 3s infinite ease-in-out}
-    header p {font-size:1.15rem; margin-top:.5rem; color:#dcdcdc}
-    @keyframes pulseGlow {0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.15);opacity:1}}
-    @keyframes floatText {0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+    
+    .modal-overlay.show { opacity: 1; pointer-events: auto; }
+    
+    .modal-card {
+      background: var(--surface0);
+      border-radius: 20px;
+      padding: 2rem;
+      max-width: 420px;
+      width: 90%;
+      box-shadow: 0 20px 60px rgba(0,0,0,.5);
+      color: var(--text);
+      text-align: center;
+      border: 1px solid var(--accent);
+      position: relative;
+    }
+    
+    .modal-card h3 { margin-top: 0; color: var(--accent); }
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      background: transparent;
+      border: 0;
+      color: var(--subtext0);
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+    .modal-close:hover { color: var(--accent2); }
 
-    /* Layout */
-    .content {padding:2rem; max-width:900px; margin:2rem auto}
-    .panel {background:var(--panel); border-radius:10px; padding:1.6rem; box-shadow:0 6px 28px rgba(0,0,0,.45)}
-    h2{color:var(--accent); margin-top:0}
-
-    ul.skills, ul.links {list-style:none; padding:0; margin:0; display:flex; flex-wrap:wrap; gap:0.5rem}
-    ul.skills li, ul.links li {background:#222; padding:0.5rem 0.75rem; border-radius:6px; font-size:0.9rem}
-
-    #three-container, #torus-container{width:100%; max-width:1100px; margin:1.25rem auto; display:block}
-    footer{padding:2rem 1rem; text-align:center; border-top:2px solid var(--accent); background:linear-gradient(180deg,#141414,#161616)}
-    footer p{margin:.35rem 0}
-    footer .credit{font-weight:700; color:var(--accent); font-size:1.15rem}
-    a{color:var(--accent)}
-    kbd{background:#222;border-radius:4px;padding:3px 6px;border:1px solid #2b2b2b}
-
-    /* fallback box (when WebGL not available) */
-    .fallback {display:flex; align-items:center; justify-content:center; padding:2rem; color:#bbb}
-
-    /* modal for easter egg */
-    .modal-overlay{position:fixed; inset:0; background:rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; z-index:1000; opacity:0; pointer-events:none; transition:opacity .18s}
-    .modal-overlay.show{opacity:1; pointer-events:auto}
-    .modal-card{background:linear-gradient(180deg,#0f0f0f,#191919); border-radius:10px; padding:1.25rem 1.5rem; max-width:420px; width:90%; box-shadow:0 8px 40px rgba(0,0,0,.7); color:var(--muted); text-align:center}
-    .modal-card h3{margin-top:0; color:var(--accent)}
-    .modal-close{position:absolute; top:12px; right:16px; background:transparent; border:0; color:#fff; font-size:1.1rem; cursor:pointer}
-
-    @media (max-width:640px){header{padding:2.5rem 1rem} header h1{font-size:2rem}}
+    @media (max-width: 768px) {
+      header { padding: 2.5rem 1rem; }
+      header h1 { font-size: 2.2rem; }
+      .profile-pic { width: 100px; height: 100px; font-size: 50px; }
+      .about-grid { grid-template-columns: 1fr; }
+      .content { padding: 1rem; }
+    }
   </style>
 
-  <!-- three.js loaded early so scenes can initialize reliably -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
+  <canvas id="bg-canvas"></canvas>
+  
   <header data-aos="fade-down">
-    <h1>💡 Hey! I'm Lamp</h1>
-    <p>A stupid programmer from France 🇫🇷 who sometimes makes cool things</p>
+    <div class="profile-container">
+      <div class="profile-pic"></div>
+      <h1>Hey! I'm Lamp</h1>
+      <p>A passionate programmer from France 🇫🇷 who creates amazing digital experiences</p>
+      <div class="header-3d" id="header-3d"></div>
+    </div>
   </header>
 
   <main class="content">
     <section class="panel" data-aos="fade-up">
       <h2>About Me</h2>
-      <p>Hey! I'm lamp, a stupid programmer from France.</p>
-      <p>There's more about myself, here it is:</p>
-      <h3>Languages & Tools</h3>
-      <ul class="skills">
-        <li>Python - Still learning</li>
-        <li>Java - Beginner</li>
-        <li>C# - Starting to learn a bit more than python</li>
-        <li>JS - Still learning</li>
-        <li>HTML - Knows how to code in</li>
-        <li>CSS - Knows how to code in mostly</li>
-        <li>NodeJS - Almost doesn't know and stopped coding in it</li>
-        <li>Bash (Unix) - Beginner</li>
-        <li>Bat (Windows) - Mostly</li>
-      </ul>
-      <h3>Hosting Platforms</h3>
-      <ul class="skills">
-        <li>Vercel - lamps-dev.dev, blog.lamps-dev.dev</li>
-        <li>Namecheap - ilovelampadaire.com (expired)</li>
-        <li>Spaceship - lamps-dev.dev, lamps.lol</li>
-        <li>Github Pages - lamps-dev.dev</li>
-        <li>Cloudflare - lamps-dev.dev, lamps.lol</li>
-        <li>Gandi.net - lampsss.online</li>
-        <li>Hostinger - blog.lamps-dev.dev, lampsprojects.net</li>
-      </ul>
+      <p style="font-size: 1.1rem; line-height: 1.6; color: var(--subtext1);">
+        Welcome to my digital space! I'm a developer passionate about creating innovative solutions and bringing ideas to life through code. 
+        Always learning and exploring new technologies to build better experiences.
+      </p>
+      
+      <div class="about-grid">
+        <div class="skill-category">
+          <h3>💻 Programming Languages</h3>
+          <div class="skills-grid">
+            <div class="skill-item">🐍 Python - Still learning</div>
+            <div class="skill-item">☕ Java - Beginner</div>
+            <div class="skill-item">🔷 C# - Getting stronger</div>
+            <div class="skill-item">⚡ JavaScript - Still learning</div>
+            <div class="skill-item">🌐 HTML - Proficient</div>
+            <div class="skill-item">🎨 CSS - Mostly proficient</div>
+            <div class="skill-item">📦 NodeJS - Learning pause</div>
+            <div class="skill-item">🐧 Bash (Unix) - Beginner</div>
+            <div class="skill-item">🪟 Batch (Windows) - Mostly</div>
+          </div>
+        </div>
 
-      <h3>Useful / Cool websites</h3>
-      <ul class="links">
-        <li><a href="https://web.archive.org" target="_blank">Internet Archive</a></li>
-        <li><a href="https://www.crystalhost.xyz" target="_blank">CrystalHost</a></li>
-        <li><a href="https://addons.opera.com/extensions/details/savefromnet-helper" target="_blank">SaveFromNet Helper</a></li>
-        <li><a href="https://addoncrop.com/v25/youtube-mp3-converter" target="_blank">YouTube MP3 Converter</a></li>
-        <li><a href="https://suno.ai" target="_blank">Suno AI</a></li>
-        <li><a href="https://malwarewatch.org" target="_blank">MalwareWatch</a></li>
-      </ul>
+        <div class="skill-category">
+          <h3>🌐 Hosting & Domains</h3>
+          <div class="skills-grid">
+            <div class="skill-item">▲ Vercel - lamps-dev.dev, blog</div>
+            <div class="skill-item">🚀 Spaceship - lamps-dev.dev, lamps.lol</div>
+            <div class="skill-item">📄 GitHub Pages - lamps-dev.dev</div>
+            <div class="skill-item">☁️ Cloudflare - lamps-dev.dev, lamps.lol</div>
+            <div class="skill-item">🔧 Gandi.net - lampsss.online</div>
+            <div class="skill-item">🏠 Hostinger - blog, lampsprojects.net</div>
+          </div>
+        </div>
+      </div>
 
-      <h3>Social media</h3>
-      <ul class="skills">
-        <li>YouTube: @ilovelampadaire</li>
-        <li>Twitter (X): @lampytofficial</li>
-        <li>Steam: Ilovelampadaire</li>
-        <li>Linktree: ilovelampadaireyt</li>
-        <li>Discord: lampyt</li>
-        <li>Bluesky: @ilovelampadaire</li>
-        <li>Mastodon: @lampyt</li>
-        <li>Websites: lampsprojects.net · lampsss.online · lamps-dev.dev · lamps.lol</li>
-      </ul>
+      <div class="skill-category" style="margin-top: 2rem;">
+        <h3>🔗 Useful Resources</h3>
+        <div class="useful-links">
+          <a href="https://web.archive.org" target="_blank" class="useful-link">📚 Internet Archive</a>
+          <a href="https://www.crystalhost.xyz" target="_blank" class="useful-link">💎 CrystalHost</a>
+          <a href="https://addons.opera.com/extensions/details/savefromnet-helper" target="_blank" class="useful-link">💾 SaveFromNet Helper</a>
+          <a href="https://addoncrop.com/v25/youtube-mp3-converter" target="_blank" class="useful-link">🎵 YouTube MP3 Converter</a>
+          <a href="https://suno.ai" target="_blank" class="useful-link">🤖 Suno AI</a>
+          <a href="https://malwarewatch.org" target="_blank" class="useful-link">🛡️ MalwareWatch</a>
+        </div>
+      </div>
 
-      <p style="color:#bdbdbd">Tip: press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>L</kbd> to reveal a tiny surprise 💫</p>
+      <div class="skill-category" style="margin-top: 2rem;">
+        <h3>🌟 Connect With Me</h3>
+        <div class="social-links">
+          <a href="https://youtube.com/@ilovelampadaire" target="_blank" class="social-link">
+            <div class="social-platform">📺 YouTube</div>
+            @ilovelampadaire
+          </a>
+          <a href="https://twitter.com/lampytofficial" target="_blank" class="social-link">
+            <div class="social-platform">🐦 Twitter (X)</div>
+            @lampytofficial
+          </a>
+          <a href="https://steamcommunity.com/id/Ilovelampadaire" target="_blank" class="social-link">
+            <div class="social-platform">🎮 Steam</div>
+            Ilovelampadaire
+          </a>
+          <a href="https://linktr.ee/ilovelampadaireyt" target="_blank" class="social-link">
+            <div class="social-platform">🔗 Linktree</div>
+            ilovelampadaireyt
+          </a>
+          <a href="https://discord.com/users/lampyt" target="_blank" class="social-link">
+            <div class="social-platform">💬 Discord</div>
+            lampyt
+          </a>
+          <a href="https://bsky.app/profile/ilovelampadaire" target="_blank" class="social-link">
+            <div class="social-platform">🦋 Bluesky</div>
+            @ilovelampadaire
+          </a>
+          <a href="https://mastodon.social/@lampyt" target="_blank" class="social-link">
+            <div class="social-platform">🐘 Mastodon</div>
+            @lampyt
+          </a>
+        </div>
+        
+        <div style="margin-top: 1.5rem;">
+          <h4 style="color: var(--accent4); margin-bottom: 1rem;">🌐 My Websites</h4>
+          <div class="useful-links">
+            <a href="https://lampsprojects.net" target="_blank" class="useful-link">lampsprojects.net</a>
+            <a href="https://lampsss.online" target="_blank" class="useful-link">lampsss.online</a>
+            <a href="https://lamps-dev.dev" target="_blank" class="useful-link">lamps-dev.dev</a>
+            <a href="https://lamps.lol" target="_blank" class="useful-link">lamps.lol</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="easter-egg-hint">
+        <p>🎯 Tip: Press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>L</kbd> to discover a special surprise! 💫</p>
+      </div>
     </section>
   </main>
 
-  <!-- 3D canvas containers -->
-  <div id="three-container" class="panel" data-aos="zoom-in"></div>
-
   <footer>
-    <div id="torus-container" class="panel" data-aos="fade-up"></div>
     <p>&copy; 2025 Lamp</p>
-    <p class="credit">Made by <a href="https://www.ivoryhnt.dev" target="_blank" rel="noopener">Ivory Hnt</a></p>
-    <!-- Secret removed from footer as requested -->
+    <p class="credit">Made with 💜 by <a href="https://www.ivoryhnt.dev" target="_blank" rel="noopener">Ivory Hnt</a></p>
+    <p>Featuring Salma the cat 🐱 from Montpellier</p>
   </footer>
 
-  <!-- AOS script must be loaded before we call AOS.init() -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
 
   <script>
-    // Initialize AOS safely (we load script above)
-    if (typeof AOS !== 'undefined') { AOS.init({ duration: 700, once: true }); }
-
-    // Helper: check WebGL availability
-    function isWebGLAvailable(){
-      try{
-        const canvas = document.createElement('canvas');
-        return !!(window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
-      }catch(e){ return false; }
+    // Initialize AOS
+    if (typeof AOS !== 'undefined') { 
+      AOS.init({ duration: 1000, once: true, easing: 'ease-out-cubic' }); 
     }
 
-    // Responsive sizing
-    function getSizeForContainer(container, heightRatio = 0.5, minH = 200){
-      const width = Math.max(320, container.clientWidth || window.innerWidth);
-      const height = Math.max(minH, Math.floor(width * heightRatio));
-      return { width, height };
-    }
-
-    // Fallback UI when WebGL isn't available
-    function showFallback(container, message){
-      container.innerHTML = '';
-      const box = document.createElement('div');
-      box.className = 'fallback';
-      box.innerHTML = `<div><strong>${message}</strong><div style="margin-top:.6rem;color:#999">Try a modern browser or enable hardware acceleration.</div></div>`;
-      container.appendChild(box);
-    }
-
-    // --- Main scene: cube + sphere ---
-    (function initMainScene(){
-      const container = document.getElementById('three-container');
-      container.innerHTML = '';
-      if (!isWebGLAvailable()) { showFallback(container, 'WebGL not available — 3D preview disabled.'); return; }
-
-      const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-      container.appendChild(renderer.domElement);
+    // 3D Background Scene
+    (function initBackground() {
+      const canvas = document.getElementById('bg-canvas');
+      if (!canvas) return;
 
       const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 1000);
-      camera.position.z = 6;
-
-      const mat = new THREE.MeshStandardMaterial({ color: 0xf28b82, metalness:0.25, roughness:0.6 });
-      const cube = new THREE.Mesh(new THREE.BoxGeometry(1.6,1.6,1.6), mat);
-      const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.95, 32, 32), mat);
-      cube.position.x = -1.5; sphere.position.x = 1.5;
-      scene.add(cube, sphere);
-
-      const key = new THREE.DirectionalLight(0xffffff, 0.9); key.position.set(5,6,5); scene.add(key);
-      scene.add(new THREE.AmbientLight(0xffffff, 0.2));
-
-      function resize(){
-        const size = getSizeForContainer(container, 0.45, 260);
-        renderer.setSize(size.width, size.height);
-        camera.aspect = size.width / size.height; camera.updateProjectionMatrix();
-      }
-      window.addEventListener('resize', resize);
-      resize();
-
-      let lastTime = 0;
-      function animate(t){
-        requestAnimationFrame(animate);
-        const dt = (t - lastTime) * 0.001; lastTime = t;
-        cube.rotation.x += 0.9 * dt; cube.rotation.y += 1.1 * dt;
-        sphere.rotation.y -= 0.7 * dt; sphere.rotation.x += 0.5 * dt;
-        renderer.render(scene, camera);
-      }
-      requestAnimationFrame(animate);
-
-      // Pointer parallax for subtle movement
-      const bounds = container.getBoundingClientRect();
-      window.addEventListener('mousemove', (e)=>{
-        const x = (e.clientX - bounds.left) / bounds.width - 0.5;
-        cube.position.x = -1.5 + x * 0.8; sphere.position.x = 1.5 + x * 0.8;
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      
+      const renderer = new THREE.WebGLRenderer({ 
+        canvas: canvas, 
+        antialias: true, 
+        alpha: true 
       });
-    })();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    // --- Torus scene (above footer) ---
-    (function initTorusScene(){
-      const container = document.getElementById('torus-container');
-      container.innerHTML = '';
-      if (!isWebGLAvailable()) { showFallback(container, 'WebGL not available — decorative 3D disabled.'); return; }
-
-      const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-      container.appendChild(renderer.domElement);
-
-      const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 1000);
-      camera.position.z = 4.5;
-
-      const mat = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive:0x220000, emissiveIntensity:0.04 });
-      const torus = new THREE.Mesh(new THREE.TorusGeometry(1.2,0.28,16,100), mat);
-      scene.add(torus);
-
-      const pLight = new THREE.PointLight(0xffffff, 0.9); pLight.position.set(4,4,6); scene.add(pLight);
-      scene.add(new THREE.AmbientLight(0xffffff, 0.12));
-
-      function resize(){
-        const size = getSizeForContainer(container, 0.22, 140);
-        renderer.setSize(size.width, size.height);
-        camera.aspect = size.width / size.height; camera.updateProjectionMatrix();
+      // Create floating geometric shapes
+      const shapes = [];
+      const colors = [0xcba6f7, 0xf38ba8, 0x94e2d5, 0xfab387, 0xa6e3a1];
+      
+      for (let i = 0; i < 50; i++) {
+        const geometries = [
+          new THREE.BoxGeometry(0.2, 0.2, 0.2),
+          new THREE.SphereGeometry(0.15, 8, 8),
+          new THREE.TetrahedronGeometry(0.2),
+          new THREE.OctahedronGeometry(0.15)
+        ];
+        
+        const geometry = geometries[Math.floor(Math.random() * geometries.length)];
+        const material = new THREE.MeshPhongMaterial({ 
+          color: colors[Math.floor(Math.random() * colors.length)],
+          transparent: true,
+          opacity: 0.6,
+          shininess: 100
+        });
+        
+        const shape = new THREE.Mesh(geometry, material);
+        
+        shape.position.set(
+          (Math.random() - 0.5) * 50,
+          (Math.random() - 0.5) * 50,
+          (Math.random() - 0.5) * 50
+        );
+        
+        shape.rotation.set(
+          Math.random() * Math.PI,
+          Math.random() * Math.PI,
+          Math.random() * Math.PI
+        );
+        
+        shape.userData = {
+          originalY: shape.position.y,
+          floatSpeed: 0.5 + Math.random() * 1.0,
+          rotationSpeed: {
+            x: (Math.random() - 0.5) * 0.02,
+            y: (Math.random() - 0.5) * 0.02,
+            z: (Math.random() - 0.5) * 0.02
+          }
+        };
+        
+        shapes.push(shape);
+        scene.add(shape);
       }
-      window.addEventListener('resize', resize);
-      resize();
 
-      let last = 0;
-      function animate(t){
+      // Lighting
+      const ambientLight = new THREE.AmbientLight(0x404040, 0.3);
+      scene.add(ambientLight);
+      
+      const pointLight1 = new THREE.PointLight(0xcba6f7, 1, 100);
+      pointLight1.position.set(10, 10, 10);
+      scene.add(pointLight1);
+      
+      const pointLight2 = new THREE.PointLight(0xf38ba8, 0.8, 100);
+      pointLight2.position.set(-10, -10, 10);
+      scene.add(pointLight2);
+
+      camera.position.z = 5;
+
+      // Mouse interaction
+      let mouseX = 0, mouseY = 0;
+      document.addEventListener('mousemove', (event) => {
+        mouseX = (event.clientX - window.innerWidth / 2) * 0.0005;
+        mouseY = (event.clientY - window.innerHeight / 2) * 0.0005;
+      });
+
+      // Smooth animation
+      let time = 0;
+      function animate() {
         requestAnimationFrame(animate);
-        const dt = (t - last) * 0.001; last = t;
-        torus.rotation.x += 0.9 * dt; torus.rotation.y += 1.2 * dt;
+        time += 0.01;
+
+        // Smooth camera movement
+        camera.position.x += (mouseX * 2 - camera.position.x) * 0.02;
+        camera.position.y += (-mouseY * 2 - camera.position.y) * 0.02;
+        camera.lookAt(scene.position);
+
+        // Animate shapes
+        shapes.forEach((shape, index) => {
+          // Gentle floating motion
+          shape.position.y = shape.userData.originalY + Math.sin(time * shape.userData.floatSpeed + index) * 2;
+          
+          // Slow rotation
+          shape.rotation.x += shape.userData.rotationSpeed.x;
+          shape.rotation.y += shape.userData.rotationSpeed.y;
+          shape.rotation.z += shape.userData.rotationSpeed.z;
+          
+          // Gentle pulsing opacity
+          shape.material.opacity = 0.4 + Math.sin(time * 0.5 + index) * 0.2;
+        });
+
         renderer.render(scene, camera);
       }
-      requestAnimationFrame(animate);
+
+      // Handle resize
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+
+      animate();
     })();
 
-    // --- Easter egg modal (replaces alert) ---
+    // Header 3D Scene
+    (function initHeader3D() {
+      const container = document.getElementById('header-3d');
+      if (!container) return;
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, container.clientWidth / 200, 0.1, 1000);
+      
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setSize(container.clientWidth, 200);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      container.appendChild(renderer.domElement);
+
+      // Create a cool 3D logo/element
+      const group = new THREE.Group();
+      
+      // Main torus
+      const torusGeometry = new THREE.TorusGeometry(1.2, 0.3, 16, 100);
+      const torusMaterial = new THREE.MeshPhongMaterial({ 
+        color: 0xcba6f7,
+        shininess: 100 
+      });
+      const torus = new THREE.Mesh(torusGeometry, torusMaterial);
+      group.add(torus);
+      
+      // Smaller orbiting spheres
+      for (let i = 0; i < 6; i++) {
+        const sphereGeometry = new THREE.SphereGeometry(0.15, 16, 16);
+        const sphereMaterial = new THREE.MeshPhongMaterial({ 
+          color: [0xf38ba8, 0x94e2d5, 0xfab387][i % 3] 
+        });
+        const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+        
+        const angle = (i / 6) * Math.PI * 2;
+        sphere.position.set(Math.cos(angle) * 2, 0, Math.sin(angle) * 2);
+        sphere.userData.angle = angle;
+        sphere.userData.radius = 2;
+        
+        group.add(sphere);
+      }
+      
+      scene.add(group);
+
+      // Lighting
+      const ambientLight = new THREE.AmbientLight(0x404040, 0.4);
+      scene.add(ambientLight);
+      
+      const pointLight = new THREE.PointLight(0xffffff, 1, 100);
+      pointLight.position.set(10, 10, 10);
+      scene.add(pointLight);
+
+      camera.position.z = 5;
+
+      // Animation
+      let time = 0;
+      function animate() {
+        requestAnimationFrame(animate);
+        time += 0.01;
+
+        // Rotate main torus
+        torus.rotation.x = time * 0.3;
+        torus.rotation.y = time * 0.5;
+        
+        // Orbit spheres
+        group.children.forEach((child, index) => {
+          if (child !== torus) {
+            child.userData.angle += 0.02;
+            child.position.x = Math.cos(child.userData.angle) * child.userData.radius;
+            child.position.z = Math.sin(child.userData.angle) * child.userData.radius;
+            child.position.y = Math.sin(child.userData.angle * 2) * 0.5;
+            child.rotation.y += 0.03;
+          }
+        });
+
+        renderer.render(scene, camera);
+      }
+
+      // Handle resize
+      window.addEventListener('resize', () => {
+        const width = container.clientWidth;
+        renderer.setSize(width, 200);
+        camera.aspect = width / 200;
+        camera.updateProjectionMatrix();
+      });
+
+      animate();
+    })();
+
+    // Easter egg modal
     (function setupModal(){
-      const overlay = document.createElement('div'); overlay.className = 'modal-overlay'; overlay.id = 'easter-modal';
-      overlay.innerHTML = `<div class="modal-card"><button class="modal-close" aria-label="Close">✕</button><h3>🎉 You found the Lamp Easter Egg!</h3><p>Nice — keep exploring the site. 💫</p></div>`;
+      const overlay = document.createElement('div'); 
+      overlay.className = 'modal-overlay'; 
+      overlay.id = 'easter-modal';
+      overlay.innerHTML = `
+        <div class="modal-card">
+          <button class="modal-close" aria-label="Close">✕</button>
+          <h3>🎉 You found Salma's secret!</h3>
+          <p>🐱 Meow! Salma the tortoiseshell cat from Montpellier says hello!</p>
+          <p style="font-size: 0.9rem; color: var(--subtext0);">Keep exploring - there might be more surprises! 💫</p>
+        </div>`;
       document.body.appendChild(overlay);
-      overlay.querySelector('.modal-close').addEventListener('click', ()=> overlay.classList.remove('show'));
-      overlay.addEventListener('click', (e)=>{ if (e.target === overlay) overlay.classList.remove('show'); });
+      
+      overlay.querySelector('.modal-close').addEventListener('click', () => overlay.classList.remove('show'));
+      overlay.addEventListener('click', (e) => { 
+        if (e.target === overlay) overlay.classList.remove('show'); 
+      });
 
       document.addEventListener('keydown', function(e){
         if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'l'){
@@ -279,6 +666,16 @@
         }
       });
     })();
+
+    // Smooth scroll for better UX
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
   </script>
 </body>
 </html>
